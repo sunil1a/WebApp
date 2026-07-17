@@ -18,7 +18,7 @@
     --border: rgba(11,11,11,0.10);
     --good: #006300;
     --critical: #d03b3b;
-    /* categorical slots */
+    --warning: #b06a00;
     --s1: #2a78d6; --s2: #008300; --s3: #e87ba4; --s4: #eda100;
     --s5: #1baf7a; --s6: #eb6834; --s7: #4a3aa7; --s8: #e34948;
     --accent: #2a78d6;
@@ -27,17 +27,10 @@
   @media (prefers-color-scheme: dark) {
     :root:where(:not([data-theme="light"])) {
       color-scheme: dark;
-      --surface-1: #1a1a19;
-      --page: #0d0d0d;
-      --card: #1a1a19;
-      --text-primary: #ffffff;
-      --text-secondary: #c3c2b7;
-      --muted: #898781;
-      --grid: #2c2c2a;
-      --baseline: #383835;
-      --border: rgba(255,255,255,0.10);
-      --good: #0ca30c;
-      --critical: #d03b3b;
+      --surface-1: #1a1a19; --page: #0d0d0d; --card: #1a1a19;
+      --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
+      --good: #0ca30c; --critical: #d03b3b; --warning: #fab219;
       --s1: #3987e5; --s2: #008300; --s3: #d55181; --s4: #c98500;
       --s5: #199e70; --s6: #d95926; --s7: #9085e9; --s8: #e66767;
       --accent: #3987e5;
@@ -49,7 +42,7 @@
     --surface-1: #1a1a19; --page: #0d0d0d; --card: #1a1a19;
     --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
     --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
-    --good: #0ca30c; --critical: #d03b3b;
+    --good: #0ca30c; --critical: #d03b3b; --warning: #fab219;
     --s1: #3987e5; --s2: #008300; --s3: #d55181; --s4: #c98500;
     --s5: #199e70; --s6: #d95926; --s7: #9085e9; --s8: #e66767;
     --accent: #3987e5;
@@ -59,46 +52,39 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    background: var(--page);
-    color: var(--text-primary);
+    background: var(--page); color: var(--text-primary);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
   }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
 
-  header.app {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
-  }
+  header.app { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
   header.app h1 { font-size: 22px; margin: 0; letter-spacing: -0.01em; }
   header.app .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
   .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
-  button, select, input {
-    font-family: inherit; font-size: 14px; color: var(--text-primary);
-  }
-  .btn {
-    background: var(--card); border: 1px solid var(--border); color: var(--text-primary);
-    padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: background .12s, border-color .12s;
-  }
+  button, select, input { font-family: inherit; font-size: 14px; color: var(--text-primary); }
+  .btn { background: var(--card); border: 1px solid var(--border); color: var(--text-primary); padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: background .12s, border-color .12s; }
   .btn:hover { border-color: var(--accent); }
   .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
   .btn.primary:hover { filter: brightness(1.05); }
   .btn.ghost { background: transparent; }
-  .btn.sm { padding: 4px 8px; font-size: 12px; }
-  .icon-btn {
-    background: transparent; border: none; color: var(--muted); cursor: pointer;
-    padding: 4px 6px; border-radius: 6px; font-size: 14px; line-height: 1;
-  }
+  .btn.danger { color: var(--critical); }
+  .btn.sm { padding: 5px 9px; font-size: 12px; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .icon-btn { background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 4px 6px; border-radius: 6px; font-size: 14px; line-height: 1; }
   .icon-btn:hover { color: var(--critical); background: var(--border); }
 
-  /* Summary tiles */
+  /* Cloud status chip */
+  #cloudBtn { display: inline-flex; align-items: center; gap: 7px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+  .dot.on { background: var(--good); }
+  .dot.syncing { background: var(--warning); animation: pulse 1s infinite; }
+  .dot.err { background: var(--critical); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
-  .tile {
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 16px 18px; box-shadow: var(--shadow);
-  }
+  .tile { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow); }
   .tile .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
   .tile .value { font-size: 26px; font-weight: 600; margin-top: 6px; letter-spacing: -0.02em; }
   .tile .value.pos { color: var(--good); }
@@ -107,35 +93,23 @@
   .grid2 { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start; }
   @media (max-width: 820px) { .grid2 { grid-template-columns: 1fr; } }
 
-  .card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 18px; box-shadow: var(--shadow);
-  }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; box-shadow: var(--shadow); }
   .card h2 { font-size: 15px; margin: 0 0 14px; letter-spacing: -0.01em; }
   .card h2 .hint { font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 6px; }
 
-  /* Form */
   .field { margin-bottom: 12px; }
   .field label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 5px; }
-  .field input, .field select {
-    width: 100%; padding: 9px 10px; border-radius: 8px;
-    border: 1px solid var(--border); background: var(--surface-1);
-  }
+  .field input, .field select { width: 100%; padding: 9px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); }
   .field input:focus, .field select:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
   .row { display: flex; gap: 10px; }
   .row .field { flex: 1; }
   .type-toggle { display: flex; gap: 8px; }
-  .type-toggle button {
-    flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border);
-    background: var(--surface-1); cursor: pointer; color: var(--text-secondary);
-  }
+  .type-toggle button { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); cursor: pointer; color: var(--text-secondary); }
   .type-toggle button[aria-pressed="true"][data-t="expense"] { background: var(--critical); color:#fff; border-color: var(--critical); }
   .type-toggle button[aria-pressed="true"][data-t="income"] { background: var(--good); color:#fff; border-color: var(--good); }
-
   .cat-add { display: flex; gap: 8px; margin-top: 4px; }
   .cat-add input { flex: 1; }
 
-  /* Chart */
   .chart { width: 100%; }
   .bar-row { margin-bottom: 12px; }
   .bar-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; font-size: 13px; }
@@ -146,7 +120,6 @@
   .bar-fill { height: 100%; border-radius: 5px; transition: width .3s ease; }
   .bar-pct { color: var(--muted); font-size: 11px; margin-left: 6px; }
 
-  /* Transaction list */
   .filters { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
   .filters select { padding: 7px 9px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -160,14 +133,31 @@
   .tx-date { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
   .empty { text-align: center; color: var(--muted); padding: 32px 12px; font-size: 14px; }
   .table-scroll { overflow-x: auto; }
-
-  .toast {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: var(--text-primary); color: var(--page); padding: 10px 16px; border-radius: 8px;
-    font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 50;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .muted-note { color: var(--muted); font-size: 12px; margin-top: 10px; }
+
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text-primary); color: var(--page); padding: 10px 16px; border-radius: 8px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 60; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Modal */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 50; overflow-y: auto; }
+  .overlay.show { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 480px; box-shadow: var(--shadow); }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--grid); }
+  .modal-head h2 { margin: 0; font-size: 16px; }
+  .modal-body { padding: 20px; }
+  .modal .status-line { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+  details.setup { margin-top: 4px; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; background: var(--surface-1); }
+  details.setup summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+  details.setup ol { margin: 10px 0 0; padding-left: 20px; font-size: 13px; color: var(--text-secondary); }
+  details.setup li { margin-bottom: 6px; }
+  pre.sql { background: var(--page); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 11.5px; overflow-x: auto; margin: 8px 0 0; white-space: pre; color: var(--text-primary); }
+  .hr { height: 1px; background: var(--grid); margin: 16px 0; border: 0; }
+  .signed-in-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .err-msg { color: var(--critical); font-size: 13px; margin-top: 8px; min-height: 1px; }
+  .ok-msg { color: var(--good); font-size: 13px; margin-top: 8px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tabs button { flex: 1; padding: 7px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); cursor: pointer; color: var(--text-secondary); font-size: 13px; }
+  .tabs button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -175,15 +165,12 @@
   <header class="app">
     <div>
       <h1>Budget Tracker</h1>
-      <div class="sub">Personal spending, organised by category — saved on this device.</div>
+      <div class="sub">Personal spending, organised by category.</div>
     </div>
     <div class="header-actions">
+      <button class="btn" id="cloudBtn" title="Cloud sync"><span class="dot" id="cloudDot"></span><span id="cloudLabel">Cloud off</span></button>
       <select id="currency" class="btn" title="Currency" aria-label="Currency">
-        <option value="₹">₹ INR</option>
-        <option value="$">$ USD</option>
-        <option value="€">€ EUR</option>
-        <option value="£">£ GBP</option>
-        <option value="¥">¥ JPY</option>
+        <option value="₹">₹ INR</option><option value="$">$ USD</option><option value="€">€ EUR</option><option value="£">£ GBP</option><option value="¥">¥ JPY</option>
       </select>
       <button class="btn ghost" id="themeBtn" title="Toggle light/dark">🌓</button>
       <button class="btn ghost" id="exportBtn" title="Download a backup">Export</button>
@@ -200,7 +187,6 @@
   </section>
 
   <div class="grid2">
-    <!-- Add form -->
     <div class="card">
       <h2>Add a transaction</h2>
       <form id="txForm">
@@ -209,42 +195,25 @@
           <button type="button" data-t="income" aria-pressed="false">Income</button>
         </div>
         <div class="row">
-          <div class="field">
-            <label for="amount">Amount</label>
-            <input type="number" id="amount" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required>
-          </div>
-          <div class="field">
-            <label for="date">Date</label>
-            <input type="date" id="date" required>
-          </div>
+          <div class="field"><label for="amount">Amount</label><input type="number" id="amount" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required></div>
+          <div class="field"><label for="date">Date</label><input type="date" id="date" required></div>
         </div>
-        <div class="field">
-          <label for="category">Category</label>
-          <select id="category" required></select>
-        </div>
-        <div class="field">
-          <label for="note">Note <span style="color:var(--muted)">(optional)</span></label>
-          <input type="text" id="note" placeholder="e.g. lunch with team" maxlength="120">
-        </div>
+        <div class="field"><label for="category">Category</label><select id="category" required></select></div>
+        <div class="field"><label for="note">Note <span style="color:var(--muted)">(optional)</span></label><input type="text" id="note" placeholder="e.g. lunch with team" maxlength="120"></div>
         <button type="submit" class="btn primary" style="width:100%">Add transaction</button>
       </form>
       <div class="field" style="margin-top:16px">
         <label for="newCat">Add a custom category</label>
-        <div class="cat-add">
-          <input type="text" id="newCat" placeholder="e.g. rent, medical" maxlength="30">
-          <button class="btn" id="addCatBtn" type="button">Add</button>
-        </div>
+        <div class="cat-add"><input type="text" id="newCat" placeholder="e.g. rent, medical" maxlength="30"><button class="btn" id="addCatBtn" type="button">Add</button></div>
       </div>
     </div>
 
-    <!-- Breakdown chart -->
     <div class="card">
       <h2>Spending by category <span class="hint" id="chartScope"></span></h2>
       <div class="chart" id="chart"></div>
     </div>
   </div>
 
-  <!-- Transactions -->
   <div class="card" style="margin-top:20px">
     <div class="filters">
       <h2 style="margin:0;flex:1">Transactions</h2>
@@ -255,13 +224,68 @@
     </div>
     <div class="table-scroll">
       <table>
-        <thead>
-          <tr><th>Date</th><th>Category</th><th>Note</th><th style="text-align:right">Amount</th><th></th></tr>
-        </thead>
+        <thead><tr><th>Date</th><th>Category</th><th>Note</th><th style="text-align:right">Amount</th><th></th></tr></thead>
         <tbody id="txBody"></tbody>
       </table>
     </div>
-    <div class="muted-note">Data is stored only in this browser (localStorage). Use Export regularly to keep a backup.</div>
+    <div class="muted-note" id="storageNote"></div>
+  </div>
+</div>
+
+<!-- Cloud modal -->
+<div class="overlay" id="cloudModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cloudTitle">
+    <div class="modal-head">
+      <h2 id="cloudTitle">Cloud sync</h2>
+      <button class="icon-btn" id="cloudClose" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="status-line"><span class="dot" id="mDot"></span><span id="mStatus">Not configured</span></div>
+
+      <!-- Config: project keys -->
+      <div id="cfgSection">
+        <div class="field"><label for="sbUrl">Supabase project URL</label><input type="text" id="sbUrl" placeholder="https://xxxxxxxx.supabase.co" autocomplete="off"></div>
+        <div class="field"><label for="sbKey">Anon public key</label><input type="text" id="sbKey" placeholder="eyJhbGciOi..." autocomplete="off"></div>
+        <button class="btn" id="saveCfgBtn">Save connection</button>
+        <details class="setup">
+          <summary>First time? One-time Supabase setup (2 min)</summary>
+          <ol>
+            <li>Create a free project at <b>supabase.com</b>.</li>
+            <li>Open <b>Project Settings → API</b> and copy the <b>Project URL</b> and the <b>anon public</b> key into the fields above.</li>
+            <li>Open the <b>SQL Editor</b>, paste the snippet below, and click <b>Run</b> — this creates your tables with private per-user access.</li>
+            <li>(Recommended) In <b>Authentication → Providers → Email</b>, turn <b>off</b> "Confirm email" so you can sign in immediately.</li>
+          </ol>
+          <pre class="sql" id="sqlSnippet"></pre>
+          <button class="btn sm" id="copySql" style="margin-top:8px">Copy SQL</button>
+        </details>
+      </div>
+
+      <hr class="hr">
+
+      <!-- Auth: signed out -->
+      <div id="authSection">
+        <div class="tabs">
+          <button id="tabSignin" class="active">Sign in</button>
+          <button id="tabSignup">Create account</button>
+        </div>
+        <div class="field"><label for="authEmail">Email</label><input type="email" id="authEmail" placeholder="you@example.com" autocomplete="username"></div>
+        <div class="field"><label for="authPass">Password</label><input type="password" id="authPass" placeholder="••••••••" autocomplete="current-password"></div>
+        <button class="btn primary" id="authBtn" style="width:100%">Sign in</button>
+        <div class="err-msg" id="authErr"></div>
+      </div>
+
+      <!-- Auth: signed in -->
+      <div id="accountSection" style="display:none">
+        <div class="signed-in-row">
+          <div>Signed in as <b id="acctEmail"></b></div>
+          <button class="btn danger sm" id="signoutBtn">Sign out</button>
+        </div>
+        <div style="margin-top:14px; display:flex; gap:8px;">
+          <button class="btn primary" id="syncNowBtn">Sync now</button>
+          <span class="status-line" style="margin:0; align-self:center;"><span id="lastSync">—</span></span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -270,260 +294,208 @@
 <script>
 (function () {
   "use strict";
-  var STORE_KEY = "budgetTracker.v1";
+  var STORE_KEY = "budgetTracker.v2";
+  var CLOUD_KEY = "budgetTracker.cloud";
+  var SESSION_KEY = "budgetTracker.session";
   var SLOT_VARS = ["--s1","--s2","--s3","--s4","--s5","--s6","--s7","--s8"];
   var DEFAULT_CATS = ["Food", "Travel", "Salary given", "Online shopping", "Groceries"];
 
-  // ---- State ----
+  var SQL = [
+    "-- Budget Tracker: run once in the Supabase SQL Editor",
+    "create table if not exists public.transactions (",
+    "  id text primary key,",
+    "  user_id uuid not null default auth.uid() references auth.users on delete cascade,",
+    "  amount numeric not null,",
+    "  date text not null,",
+    "  category text not null,",
+    "  note text,",
+    "  type text not null,",
+    "  created bigint,",
+    "  updated_at timestamptz not null default now(),",
+    "  deleted boolean not null default false",
+    ");",
+    "alter table public.transactions enable row level security;",
+    "drop policy if exists \"own_tx\" on public.transactions;",
+    "create policy \"own_tx\" on public.transactions",
+    "  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);",
+    "",
+    "create table if not exists public.settings (",
+    "  user_id uuid primary key default auth.uid() references auth.users on delete cascade,",
+    "  data jsonb not null default '{}',",
+    "  updated_at timestamptz not null default now()",
+    ");",
+    "alter table public.settings enable row level security;",
+    "drop policy if exists \"own_settings\" on public.settings;",
+    "create policy \"own_settings\" on public.settings",
+    "  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);"
+  ].join("\n");
+
+  // ---------- State ----------
   var state = load();
+  var cloud = loadCloud();     // { url, key }
+  var session = loadSession(); // { access_token, refresh_token, expires_at, user:{id,email} } | null
 
   function load() {
     try {
-      var raw = localStorage.getItem(STORE_KEY);
+      var raw = localStorage.getItem(STORE_KEY) || localStorage.getItem("budgetTracker.v1");
       if (raw) {
         var d = JSON.parse(raw);
-        d.transactions = d.transactions || [];
+        d.transactions = (d.transactions || []).map(function (t) {
+          if (!t.updated_at) t.updated_at = new Date(t.created || Date.now()).toISOString();
+          if (typeof t.deleted !== "boolean") t.deleted = false;
+          if (typeof t.pending !== "boolean") t.pending = false;
+          return t;
+        });
         d.categories = (d.categories && d.categories.length) ? d.categories : DEFAULT_CATS.slice();
         d.currency = d.currency || "₹";
         d.theme = d.theme || null;
+        d.settingsUpdatedAt = d.settingsUpdatedAt || new Date(0).toISOString();
+        d.settingsDirty = !!d.settingsDirty;
         return d;
       }
-    } catch (e) { /* fall through */ }
-    return { transactions: [], categories: DEFAULT_CATS.slice(), currency: "₹", theme: null };
+    } catch (e) {}
+    return { transactions: [], categories: DEFAULT_CATS.slice(), currency: "₹", theme: null,
+             settingsUpdatedAt: new Date(0).toISOString(), settingsDirty: false };
   }
+  function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { toast("Could not save locally — storage may be full."); } }
+  function loadCloud() { try { return JSON.parse(localStorage.getItem(CLOUD_KEY)) || { url: "", key: "" }; } catch (e) { return { url: "", key: "" }; } }
+  function saveCloud() { localStorage.setItem(CLOUD_KEY, JSON.stringify(cloud)); }
+  function loadSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY)) || null; } catch (e) { return null; } }
+  function saveSession() { if (session) localStorage.setItem(SESSION_KEY, JSON.stringify(session)); else localStorage.removeItem(SESSION_KEY); }
 
-  function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
-    catch (e) { toast("Could not save — storage may be full."); }
-  }
-
-  // ---- Helpers ----
+  // ---------- Helpers ----------
   function $(id) { return document.getElementById(id); }
-  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
-  function catColor(cat) {
-    var i = state.categories.indexOf(cat);
-    if (i < 0 || i >= SLOT_VARS.length) return "var(--muted)";
-    return "var(" + SLOT_VARS[i] + ")";
-  }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 9); }
+  function now() { return new Date().toISOString(); }
+  function ms(iso) { var t = Date.parse(iso); return isNaN(t) ? 0 : t; }
+  function catColor(cat) { var i = state.categories.indexOf(cat); return (i < 0 || i >= SLOT_VARS.length) ? "var(--muted)" : "var(" + SLOT_VARS[i] + ")"; }
   function fmtMoney(n) {
     var neg = n < 0;
     var v = Math.abs(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     return (neg ? "-" : "") + state.currency + v;
   }
-  function monthKey(dateStr) { return dateStr.slice(0, 7); } // YYYY-MM
-  function monthLabel(key) {
-    var parts = key.split("-");
-    var d = new Date(parseInt(parts[0],10), parseInt(parts[1],10) - 1, 1);
-    return d.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-  }
+  function monthKey(s) { return s.slice(0, 7); }
+  function monthLabel(k) { var p = k.split("-"); return new Date(+p[0], +p[1]-1, 1).toLocaleDateString(undefined, { month: "long", year: "numeric" }); }
+  function fmtDate(s) { var p = s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]).toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" }); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]; }); }
   var toastTimer;
-  function toast(msg) {
-    var t = $("toast"); t.textContent = msg; t.classList.add("show");
-    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2200);
-  }
+  function toast(msg) { var t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2400); }
 
-  // ---- Filters ----
+  function activeTx() { return state.transactions.filter(function (t) { return !t.deleted; }); }
+
   var filter = { month: "all", cat: "all" };
-
   function filteredTx() {
-    return state.transactions.filter(function (t) {
+    return activeTx().filter(function (t) {
       if (filter.month !== "all" && monthKey(t.date) !== filter.month) return false;
       if (filter.cat !== "all" && t.category !== filter.cat) return false;
       return true;
     });
   }
 
-  // ---- Rendering ----
+  // ---------- Rendering ----------
   function renderCategorySelects() {
-    var sel = $("category");
-    var prev = sel.value;
-    sel.innerHTML = "";
-    state.categories.forEach(function (c) {
-      var o = document.createElement("option"); o.value = c; o.textContent = c; sel.appendChild(o);
-    });
+    var sel = $("category"), prev = sel.value; sel.innerHTML = "";
+    state.categories.forEach(function (c) { var o = document.createElement("option"); o.value = c; o.textContent = c; sel.appendChild(o); });
     if (state.categories.indexOf(prev) >= 0) sel.value = prev;
-
-    var fc = $("fCat"); var prevF = filter.cat;
+    var fc = $("fCat"), prevF = filter.cat;
     fc.innerHTML = '<option value="all">All categories</option>';
-    state.categories.forEach(function (c) {
-      var o = document.createElement("option"); o.value = c; o.textContent = c; fc.appendChild(o);
-    });
+    state.categories.forEach(function (c) { var o = document.createElement("option"); o.value = c; o.textContent = c; fc.appendChild(o); });
     fc.value = (prevF === "all" || state.categories.indexOf(prevF) >= 0) ? prevF : "all";
   }
-
   function renderMonthFilter() {
-    var months = {};
-    state.transactions.forEach(function (t) { months[monthKey(t.date)] = true; });
-    var keys = Object.keys(months).sort().reverse();
-    var fm = $("fMonth");
-    var prev = filter.month;
+    var months = {}; activeTx().forEach(function (t) { months[monthKey(t.date)] = true; });
+    var keys = Object.keys(months).sort().reverse(), fm = $("fMonth"), prev = filter.month;
     fm.innerHTML = '<option value="all">All time</option>';
-    keys.forEach(function (k) {
-      var o = document.createElement("option"); o.value = k; o.textContent = monthLabel(k); fm.appendChild(o);
-    });
-    fm.value = (prev === "all" || months[prev]) ? prev : "all";
-    filter.month = fm.value;
+    keys.forEach(function (k) { var o = document.createElement("option"); o.value = k; o.textContent = monthLabel(k); fm.appendChild(o); });
+    fm.value = (prev === "all" || months[prev]) ? prev : "all"; filter.month = fm.value;
   }
-
   function renderTiles() {
-    var tx = filteredTx();
-    var spent = 0, income = 0;
+    var tx = filteredTx(), spent = 0, income = 0;
     tx.forEach(function (t) { if (t.type === "income") income += t.amount; else spent += t.amount; });
     $("tSpent").textContent = fmtMoney(spent);
     $("tIn").textContent = fmtMoney(income);
-    var net = income - spent;
-    var netEl = $("tNet");
-    netEl.textContent = fmtMoney(net);
-    netEl.className = "value " + (net >= 0 ? "pos" : "neg");
+    var net = income - spent, netEl = $("tNet");
+    netEl.textContent = fmtMoney(net); netEl.className = "value " + (net >= 0 ? "pos" : "neg");
     $("tCount").textContent = String(tx.length);
   }
-
   function renderChart() {
     var tx = filteredTx().filter(function (t) { return t.type === "expense"; });
-    var scope = $("chartScope");
-    scope.textContent = filter.month === "all" ? "· all time" : "· " + monthLabel(filter.month);
-
-    var totals = {};
-    tx.forEach(function (t) { totals[t.category] = (totals[t.category] || 0) + t.amount; });
+    $("chartScope").textContent = filter.month === "all" ? "· all time" : "· " + monthLabel(filter.month);
+    var totals = {}; tx.forEach(function (t) { totals[t.category] = (totals[t.category] || 0) + t.amount; });
     var rows = Object.keys(totals).map(function (c) { return { cat: c, amt: totals[c] }; });
     rows.sort(function (a, b) { return b.amt - a.amt; });
-    var grand = rows.reduce(function (s, r) { return s + r.amt; }, 0);
-    var max = rows.length ? rows[0].amt : 0;
-
+    var grand = rows.reduce(function (s, r) { return s + r.amt; }, 0), max = rows.length ? rows[0].amt : 0;
     var host = $("chart");
     if (!rows.length) { host.innerHTML = '<div class="empty">No expenses to show yet.</div>'; return; }
-
     host.innerHTML = rows.map(function (r) {
-      var w = max > 0 ? (r.amt / max * 100) : 0;
-      var pct = grand > 0 ? Math.round(r.amt / grand * 100) : 0;
-      var color = catColor(r.cat);
-      return '<div class="bar-row">' +
-        '<div class="bar-head">' +
-          '<span class="name"><span class="swatch" style="background:' + color + '"></span>' + esc(r.cat) + '</span>' +
-          '<span class="amt">' + fmtMoney(r.amt) + '<span class="bar-pct">' + pct + '%</span></span>' +
-        '</div>' +
-        '<div class="bar-track"><div class="bar-fill" style="width:' + w + '%;background:' + color + '"></div></div>' +
-      '</div>';
+      var w = max > 0 ? (r.amt / max * 100) : 0, pct = grand > 0 ? Math.round(r.amt / grand * 100) : 0, color = catColor(r.cat);
+      return '<div class="bar-row"><div class="bar-head"><span class="name"><span class="swatch" style="background:' + color + '"></span>' + esc(r.cat) + '</span>' +
+        '<span class="amt">' + fmtMoney(r.amt) + '<span class="bar-pct">' + pct + '%</span></span></div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + w + '%;background:' + color + '"></div></div></div>';
     }).join("");
   }
-
   function renderTable() {
-    var tx = filteredTx().slice().sort(function (a, b) {
-      if (a.date === b.date) return b.created - a.created;
-      return a.date < b.date ? 1 : -1;
-    });
+    var tx = filteredTx().slice().sort(function (a, b) { return a.date === b.date ? (b.created - a.created) : (a.date < b.date ? 1 : -1); });
     var body = $("txBody");
-    if (!tx.length) {
-      body.innerHTML = '<tr><td colspan="5" class="empty">No transactions yet. Add your first one on the left.</td></tr>';
-      return;
-    }
+    if (!tx.length) { body.innerHTML = '<tr><td colspan="5" class="empty">No transactions yet. Add your first one on the left.</td></tr>'; return; }
     body.innerHTML = tx.map(function (t) {
       var sign = t.type === "income" ? "+" : "-";
-      return '<tr>' +
-        '<td class="tx-date">' + fmtDate(t.date) + '</td>' +
+      return '<tr><td class="tx-date">' + fmtDate(t.date) + '</td>' +
         '<td><span class="cat-pill"><span class="swatch" style="background:' + catColor(t.category) + '"></span>' + esc(t.category) + '</span></td>' +
         '<td class="tx-note">' + esc(t.note || "") + '</td>' +
         '<td class="amt ' + t.type + '">' + sign + fmtMoney(t.amount).replace("-", "") + '</td>' +
-        '<td style="text-align:right"><button class="icon-btn" data-del="' + t.id + '" title="Delete" aria-label="Delete transaction">✕</button></td>' +
-      '</tr>';
+        '<td style="text-align:right"><button class="icon-btn" data-del="' + t.id + '" title="Delete" aria-label="Delete">✕</button></td></tr>';
     }).join("");
   }
+  function renderAll() { renderCategorySelects(); renderMonthFilter(); renderTiles(); renderChart(); renderTable(); }
 
-  function fmtDate(s) {
-    var p = s.split("-");
-    var d = new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10));
-    return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
-  }
-  function esc(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c];
-    });
-  }
-
-  function renderAll() {
-    renderCategorySelects();
-    renderMonthFilter();
-    renderTiles();
-    renderChart();
-    renderTable();
-  }
-
-  // ---- Events ----
+  // ---------- Mutations ----------
   var txType = "expense";
   Array.prototype.forEach.call(document.querySelectorAll(".type-toggle button"), function (b) {
     b.addEventListener("click", function () {
       txType = b.getAttribute("data-t");
-      Array.prototype.forEach.call(document.querySelectorAll(".type-toggle button"), function (x) {
-        x.setAttribute("aria-pressed", x === b ? "true" : "false");
-      });
+      Array.prototype.forEach.call(document.querySelectorAll(".type-toggle button"), function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
     });
   });
-
   $("txForm").addEventListener("submit", function (e) {
     e.preventDefault();
-    var amount = parseFloat($("amount").value);
-    var date = $("date").value;
-    var category = $("category").value;
-    var note = $("note").value.trim();
+    var amount = parseFloat($("amount").value), date = $("date").value, category = $("category").value, note = $("note").value.trim();
     if (!(amount > 0) || !date || !category) { toast("Enter a valid amount, date and category."); return; }
-    state.transactions.push({
-      id: uid(), amount: amount, date: date, category: category,
-      note: note, type: txType, created: Date.now()
-    });
-    save();
-    $("amount").value = ""; $("note").value = "";
-    renderAll();
-    toast("Added.");
-    $("amount").focus();
+    state.transactions.push({ id: uid(), amount: amount, date: date, category: category, note: note, type: txType, created: Date.now(), updated_at: now(), deleted: false, pending: true });
+    save(); $("amount").value = ""; $("note").value = ""; renderAll(); toast("Added."); $("amount").focus(); scheduleSync();
   });
-
   $("addCatBtn").addEventListener("click", addCategory);
   $("newCat").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addCategory(); } });
   function addCategory() {
-    var v = $("newCat").value.trim();
-    if (!v) return;
-    var exists = state.categories.some(function (c) { return c.toLowerCase() === v.toLowerCase(); });
-    if (exists) { toast("That category already exists."); return; }
-    state.categories.push(v);
-    save();
-    $("newCat").value = "";
-    renderCategorySelects();
-    $("category").value = v;
-    toast("Category added.");
+    var v = $("newCat").value.trim(); if (!v) return;
+    if (state.categories.some(function (c) { return c.toLowerCase() === v.toLowerCase(); })) { toast("That category already exists."); return; }
+    state.categories.push(v); markSettingsDirty(); save(); $("newCat").value = ""; renderCategorySelects(); $("category").value = v; toast("Category added."); scheduleSync();
   }
-
   $("txBody").addEventListener("click", function (e) {
-    var btn = e.target.closest("[data-del]");
-    if (!btn) return;
+    var btn = e.target.closest("[data-del]"); if (!btn) return;
     var id = btn.getAttribute("data-del");
-    state.transactions = state.transactions.filter(function (t) { return t.id !== id; });
-    save();
-    renderAll();
-    toast("Deleted.");
+    var t = state.transactions.filter(function (x) { return x.id === id; })[0];
+    if (t) { t.deleted = true; t.updated_at = now(); t.pending = true; }
+    save(); renderAll(); toast("Deleted."); scheduleSync();
   });
-
   $("fMonth").addEventListener("change", function () { filter.month = this.value; renderTiles(); renderChart(); renderTable(); });
   $("fCat").addEventListener("change", function () { filter.cat = this.value; renderTiles(); renderChart(); renderTable(); });
+  $("currency").addEventListener("change", function () { state.currency = this.value; markSettingsDirty(); save(); renderAll(); scheduleSync(); });
 
-  $("currency").addEventListener("change", function () { state.currency = this.value; save(); renderAll(); });
+  function markSettingsDirty() { state.settingsUpdatedAt = now(); state.settingsDirty = true; }
 
-  // Theme
-  function applyTheme() {
-    if (state.theme) document.documentElement.setAttribute("data-theme", state.theme);
-    else document.documentElement.removeAttribute("data-theme");
-  }
+  // Theme (device-local, not synced)
+  function applyTheme() { if (state.theme) document.documentElement.setAttribute("data-theme", state.theme); else document.documentElement.removeAttribute("data-theme"); }
   $("themeBtn").addEventListener("click", function () {
     var cur = document.documentElement.getAttribute("data-theme");
     var isDark = cur === "dark" || (!cur && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    state.theme = isDark ? "light" : "dark";
-    save(); applyTheme();
+    state.theme = isDark ? "light" : "dark"; save(); applyTheme();
   });
 
-  // Export / Import
+  // Export / Import (never includes cloud keys or session)
   $("exportBtn").addEventListener("click", function () {
     var blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
+    var url = URL.createObjectURL(blob), a = document.createElement("a");
     a.href = url; a.download = "budget-backup-" + new Date().toISOString().slice(0,10) + ".json";
     document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   });
@@ -535,25 +507,250 @@
       try {
         var d = JSON.parse(reader.result);
         if (!d || !Array.isArray(d.transactions)) throw new Error("bad");
-        state = {
-          transactions: d.transactions,
-          categories: (d.categories && d.categories.length) ? d.categories : DEFAULT_CATS.slice(),
-          currency: d.currency || "₹",
-          theme: d.theme || null
-        };
-        save(); $("currency").value = state.currency; applyTheme(); renderAll();
-        toast("Backup restored.");
+        d.transactions.forEach(function (t) { t.pending = true; if (!t.updated_at) t.updated_at = now(); if (typeof t.deleted !== "boolean") t.deleted = false; });
+        state.transactions = d.transactions;
+        state.categories = (d.categories && d.categories.length) ? d.categories : DEFAULT_CATS.slice();
+        state.currency = d.currency || "₹";
+        markSettingsDirty();
+        save(); $("currency").value = state.currency; renderAll(); toast("Backup restored."); scheduleSync();
       } catch (err) { toast("Could not read that file."); }
     };
-    reader.readAsText(file);
-    e.target.value = "";
+    reader.readAsText(file); e.target.value = "";
   });
 
-  // ---- Init ----
+  // ==================================================================
+  //  CLOUD SYNC (Supabase REST + GoTrue, via fetch — no external libs)
+  // ==================================================================
+  function cloudConfigured() { return !!(cloud.url && cloud.key); }
+  function signedIn() { return !!(session && session.access_token); }
+
+  function sbFetch(path, opts) {
+    opts = opts || {};
+    var headers = { "apikey": cloud.key, "Content-Type": "application/json" };
+    if (!opts.noAuth && session && session.access_token) headers["Authorization"] = "Bearer " + session.access_token;
+    if (opts.headers) for (var k in opts.headers) headers[k] = opts.headers[k];
+    return fetch(cloud.url.replace(/\/+$/, "") + path, { method: opts.method || "GET", headers: headers, body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined });
+  }
+  // REST call with automatic one-shot token refresh on 401
+  async function api(path, opts) {
+    var r = await sbFetch(path, opts);
+    if (r.status === 401 && session && session.refresh_token) {
+      var ok = await refreshSession();
+      if (ok) r = await sbFetch(path, opts);
+    }
+    return r;
+  }
+
+  function setSession(d) {
+    session = {
+      access_token: d.access_token, refresh_token: d.refresh_token,
+      expires_at: Date.now() + (d.expires_in ? d.expires_in * 1000 : 3600000),
+      user: d.user ? { id: d.user.id, email: d.user.email } : (session ? session.user : null)
+    };
+    saveSession();
+  }
+  async function refreshSession() {
+    if (!session || !session.refresh_token) return false;
+    try {
+      var r = await sbFetch("/auth/v1/token?grant_type=refresh_token", { method: "POST", noAuth: true, body: { refresh_token: session.refresh_token } });
+      if (!r.ok) { return false; }
+      setSession(await r.json()); return true;
+    } catch (e) { return false; }
+  }
+  async function signIn(email, password) {
+    var r = await sbFetch("/auth/v1/token?grant_type=password", { method: "POST", noAuth: true, body: { email: email, password: password } });
+    var d = await r.json();
+    if (!r.ok) throw new Error(d.error_description || d.msg || d.message || "Sign in failed");
+    setSession(d);
+  }
+  async function signUp(email, password) {
+    var r = await sbFetch("/auth/v1/signup", { method: "POST", noAuth: true, body: { email: email, password: password } });
+    var d = await r.json();
+    if (!r.ok) throw new Error(d.error_description || d.msg || d.message || "Sign up failed");
+    if (d.access_token) { setSession(d); return { session: true }; }
+    return { session: false }; // email confirmation required
+  }
+  function signOut() {
+    if (cloudConfigured() && signedIn()) { sbFetch("/auth/v1/logout", { method: "POST" }).catch(function () {}); }
+    session = null; saveSession(); updateCloudUI(); renderCloudModal();
+  }
+
+  // --- sync engine ---
+  var syncing = false, syncTimer = null, lastSyncAt = null, syncErr = null;
+  function scheduleSync() { if (!cloudConfigured() || !signedIn()) return; clearTimeout(syncTimer); syncTimer = setTimeout(function () { syncNow(); }, 900); }
+
+  function markAllDirty() {
+    state.transactions.forEach(function (t) { t.pending = true; });
+    state.settingsDirty = true;
+    if (ms(state.settingsUpdatedAt) === 0) state.settingsUpdatedAt = now();
+  }
+
+  function txPayload(t) {
+    return { id: t.id, user_id: session.user.id, amount: t.amount, date: t.date, category: t.category, note: t.note || null, type: t.type, created: t.created || null, updated_at: t.updated_at, deleted: !!t.deleted };
+  }
+
+  async function syncNow() {
+    if (!cloudConfigured() || !signedIn() || syncing) return;
+    syncing = true; syncErr = null; updateCloudUI();
+    try {
+      // 1) Pull remote transactions and merge (remote wins if strictly newer)
+      var r = await api("/rest/v1/transactions?select=*");
+      if (!r.ok) throw new Error("pull " + r.status);
+      var remote = await r.json();
+      var byId = {}; state.transactions.forEach(function (t) { byId[t.id] = t; });
+      remote.forEach(function (rr) {
+        var l = byId[rr.id];
+        var norm = { id: rr.id, amount: Number(rr.amount), date: rr.date, category: rr.category, note: rr.note || "", type: rr.type, created: rr.created ? Number(rr.created) : Date.now(), updated_at: new Date(rr.updated_at).toISOString(), deleted: !!rr.deleted, pending: false };
+        if (!l) { state.transactions.push(norm); byId[norm.id] = norm; }
+        else if (ms(norm.updated_at) > ms(l.updated_at)) { Object.keys(norm).forEach(function (k) { l[k] = norm[k]; }); l.pending = false; }
+      });
+
+      // 2) Push local dirty transactions (those newer than / absent from remote)
+      var dirty = state.transactions.filter(function (t) { return t.pending; });
+      if (dirty.length) {
+        var up = await api("/rest/v1/transactions", { method: "POST", headers: { "Prefer": "resolution=merge-duplicates,return=minimal" }, body: dirty.map(txPayload) });
+        if (!up.ok) throw new Error("push " + up.status);
+        dirty.forEach(function (t) { t.pending = false; });
+      }
+
+      // 3) Settings (categories + currency), last-write-wins on the whole object
+      var sr = await api("/rest/v1/settings?select=*");
+      if (sr.ok) {
+        var srows = await sr.json();
+        var rem = srows[0];
+        if (rem && ms(new Date(rem.updated_at).toISOString()) > ms(state.settingsUpdatedAt)) {
+          if (rem.data && rem.data.categories) state.categories = rem.data.categories;
+          if (rem.data && rem.data.currency) state.currency = rem.data.currency;
+          state.settingsUpdatedAt = new Date(rem.updated_at).toISOString();
+          state.settingsDirty = false;
+          $("currency").value = state.currency;
+        }
+        if (state.settingsDirty) {
+          var supd = await api("/rest/v1/settings", { method: "POST", headers: { "Prefer": "resolution=merge-duplicates,return=minimal" }, body: [{ user_id: session.user.id, data: { categories: state.categories, currency: state.currency }, updated_at: state.settingsUpdatedAt }] });
+          if (supd.ok) state.settingsDirty = false;
+        }
+      }
+
+      save(); renderAll();
+      lastSyncAt = new Date(); syncErr = null;
+    } catch (e) {
+      syncErr = (e && e.message) ? e.message : "sync failed";
+    } finally {
+      syncing = false; updateCloudUI(); renderCloudModal();
+    }
+  }
+
+  // ---------- Cloud UI ----------
+  function updateCloudUI() {
+    var dot = $("cloudDot"), label = $("cloudLabel");
+    dot.className = "dot";
+    if (!cloudConfigured()) { label.textContent = "Cloud off"; }
+    else if (!signedIn()) { label.textContent = "Sign in"; }
+    else if (syncing) { dot.classList.add("syncing"); label.textContent = "Syncing…"; }
+    else if (syncErr) { dot.classList.add("err"); label.textContent = navigator.onLine ? "Sync error" : "Offline"; }
+    else { dot.classList.add("on"); label.textContent = "Synced"; }
+    $("storageNote").textContent = signedIn()
+      ? "Synced to your Supabase account — signed in as " + (session.user && session.user.email ? session.user.email : "you") + ". Also cached on this device."
+      : "Data is stored in this browser (localStorage). Turn on Cloud sync to back it up and use it across devices.";
+  }
+
+  function renderCloudModal() {
+    var mDot = $("mDot"), mStatus = $("mStatus");
+    mDot.className = "dot";
+    if (!cloudConfigured()) mStatus.textContent = "Not configured — add your project keys below.";
+    else if (!signedIn()) { mStatus.textContent = "Connected. Sign in to start syncing."; }
+    else if (syncing) { mDot.classList.add("syncing"); mStatus.textContent = "Syncing…"; }
+    else if (syncErr) { mDot.classList.add("err"); mStatus.textContent = (navigator.onLine ? "Last sync failed: " : "Offline — changes are queued. ") + (navigator.onLine ? syncErr : ""); }
+    else { mDot.classList.add("on"); mStatus.textContent = "All changes synced."; }
+
+    $("sbUrl").value = cloud.url || "";
+    $("sbKey").value = cloud.key || "";
+
+    if (signedIn()) {
+      $("authSection").style.display = "none";
+      $("accountSection").style.display = "";
+      $("acctEmail").textContent = (session.user && session.user.email) || "you";
+      $("lastSync").textContent = lastSyncAt ? "Last synced " + lastSyncAt.toLocaleTimeString() : (syncErr ? "" : "Not synced yet");
+    } else {
+      $("authSection").style.display = "";
+      $("accountSection").style.display = "none";
+    }
+  }
+
+  // modal open/close
+  function openCloud() { $("cloudModal").classList.add("show"); renderCloudModal(); }
+  function closeCloud() { $("cloudModal").classList.remove("show"); }
+  $("cloudBtn").addEventListener("click", openCloud);
+  $("cloudClose").addEventListener("click", closeCloud);
+  $("cloudModal").addEventListener("click", function (e) { if (e.target === this) closeCloud(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeCloud(); });
+
+  $("saveCfgBtn").addEventListener("click", function () {
+    var url = $("sbUrl").value.trim().replace(/\/+$/, ""), key = $("sbKey").value.trim();
+    if (!/^https?:\/\//.test(url) || !key) { toast("Enter a valid project URL and anon key."); return; }
+    cloud.url = url; cloud.key = key; saveCloud(); updateCloudUI(); renderCloudModal(); toast("Connection saved.");
+  });
+
+  // auth tabs
+  var authMode = "signin";
+  function setAuthMode(m) {
+    authMode = m;
+    $("tabSignin").classList.toggle("active", m === "signin");
+    $("tabSignup").classList.toggle("active", m === "signup");
+    $("authBtn").textContent = m === "signin" ? "Sign in" : "Create account";
+    $("authPass").setAttribute("autocomplete", m === "signin" ? "current-password" : "new-password");
+    $("authErr").textContent = "";
+  }
+  $("tabSignin").addEventListener("click", function () { setAuthMode("signin"); });
+  $("tabSignup").addEventListener("click", function () { setAuthMode("signup"); });
+
+  $("authBtn").addEventListener("click", async function () {
+    if (!cloudConfigured()) { $("authErr").textContent = "Save your project connection first."; return; }
+    var email = $("authEmail").value.trim(), pass = $("authPass").value;
+    if (!email || !pass) { $("authErr").textContent = "Enter your email and password."; return; }
+    $("authBtn").disabled = true; $("authErr").textContent = "";
+    try {
+      if (authMode === "signin") { await signIn(email, pass); }
+      else {
+        var res = await signUp(email, pass);
+        if (!res.session) { $("authErr").style.color = "var(--good)"; $("authErr").textContent = "Account created. Check your email to confirm, then sign in."; $("authBtn").disabled = false; setAuthMode("signin"); return; }
+      }
+      $("authPass").value = "";
+      markAllDirty();               // seed the cloud with whatever is on this device
+      updateCloudUI(); renderCloudModal();
+      toast("Signed in. Syncing…");
+      await syncNow();
+    } catch (e) {
+      $("authErr").style.color = "var(--critical)";
+      $("authErr").textContent = e.message || "Something went wrong.";
+    } finally { $("authBtn").disabled = false; }
+  });
+
+  $("signoutBtn").addEventListener("click", function () { signOut(); toast("Signed out. Local copy kept on this device."); });
+  $("syncNowBtn").addEventListener("click", function () { syncNow(); });
+
+  // setup SQL
+  $("sqlSnippet").textContent = SQL;
+  $("copySql").addEventListener("click", function () {
+    var done = function () { toast("SQL copied."); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(SQL).then(done, function () { fallbackCopy(SQL); done(); });
+    else { fallbackCopy(SQL); done(); }
+  });
+  function fallbackCopy(text) { var ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (e) {} ta.remove(); }
+
+  // resync on reconnect / focus
+  window.addEventListener("online", function () { updateCloudUI(); scheduleSync(); });
+  window.addEventListener("offline", updateCloudUI);
+  window.addEventListener("focus", function () { if (signedIn()) scheduleSync(); });
+
+  // ---------- Init ----------
   $("date").value = new Date().toISOString().slice(0, 10);
   $("currency").value = state.currency;
-  applyTheme();
-  renderAll();
+  applyTheme(); renderAll(); updateCloudUI();
+  if (cloudConfigured() && signedIn()) { syncNow(); }
+
+  // expose a tiny hook for automated testing (no effect in normal use)
+  window.__budget = { get state() { return state; }, syncNow: syncNow };
 })();
 </script>
 </body>
