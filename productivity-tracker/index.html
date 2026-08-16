@@ -1,6 +1,14 @@
 <title>Day Ledger</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light dark" />
+<meta name="theme-color" content="#2f7d5f" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Day Ledger" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon-192.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <style>
   /* ---------- Theme tokens: light is the bare :root ---------- */
   :root {
@@ -264,6 +272,13 @@
           <div class="stat"><b class="num" id="statStreak">0</b><span>day streak</span></div>
         </div>
         <p class="hero-note" id="heroNote"></p>
+      </div>
+    </div>
+
+    <div class="card hidden" id="installCard">
+      <div class="rem">
+        <div class="g"><b>Add to your home screen.</b> Install Day Ledger as an app — its own icon, opens fullscreen, works offline.</div>
+        <button class="btn" id="installBtn">Install</button>
       </div>
     </div>
 
@@ -848,6 +863,27 @@
     };
     r.readAsText(f);
   });
+
+  // ---------------- Install as app (PWA) ----------------
+  const installCard = $("installCard"), installBtn = $("installBtn");
+  let deferredPrompt = null;
+  const standalone = () => matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault(); deferredPrompt = e;
+    if (!standalone()) installCard.classList.remove("hidden");
+  });
+  installBtn && installBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    try { await deferredPrompt.userChoice; } catch (e) {}
+    deferredPrompt = null; installCard.classList.add("hidden");
+  });
+  window.addEventListener("appinstalled", () => { installCard.classList.add("hidden"); toast("Installed ✓"); });
+
+  // Register the service worker so the app works offline once installed.
+  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+    window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+  }
 
   // ---------------- Init ----------------
   buildChips(); syncForm(); renderToday(); reminderText(); scheduleReminders(); eveningCheck();
