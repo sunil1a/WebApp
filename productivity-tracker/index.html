@@ -807,11 +807,27 @@
   }
 
   // ---------------- Export / Import ----------------
-  el.exportBtn.addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
+  el.exportBtn.addEventListener("click", async () => {
+    const json = JSON.stringify(db, null, 2);
+    const filename = "day-ledger-" + TODAY + ".json";
+    // Hosted on claude.ai: use the downloads capability so the save works there too.
+    if (window.claude && typeof window.claude.use === "function") {
+      try {
+        const downloads = await window.claude.use("downloads");
+        if (downloads) {
+          await downloads.save({ filename, data: json });
+          toast("Backup saved ✓");
+          return;
+        }
+      } catch (e) {
+        if (e && e.code === "declined") return; // viewer cancelled the save
+        // otherwise fall through to the normal browser download
+      }
+    }
+    const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = "day-ledger-" + TODAY + ".json"; document.body.appendChild(a); a.click();
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click();
     a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     toast("Backup downloaded");
   });
