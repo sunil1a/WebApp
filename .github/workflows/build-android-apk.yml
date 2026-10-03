@@ -1,0 +1,25 @@
+name: Build Android APK
+
+on:
+  push:
+    paths: ["calorie-tracker/**", "android/**", ".github/workflows/build-android-apk.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Android build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends openjdk-21-jdk-headless zip aapt apksigner zipalign dalvik-exchange android-sdk-platform-23
+      - name: Build APK
+        run: VERSION_CODE=${{ github.run_number }} ./android/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CalorieTracker-apk
+          path: android/dist/CalorieTracker.apk

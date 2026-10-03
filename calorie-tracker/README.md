@@ -25,7 +25,12 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
-## Install on your Android phone
+## Android app (APK)
+
+A native Android build of this app lives in [`../android`](../android) — the ready-to-install file is
+`android/dist/CalorieTracker.apk`. See that folder's README for install steps.
+
+## Install on your Android phone (as a web app)
 
 Android only installs apps served over **HTTPS**, so the folder needs to be hosted first (free).
 Pick one:

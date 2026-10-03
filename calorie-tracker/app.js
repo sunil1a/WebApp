@@ -185,9 +185,23 @@ async function calculate() {
 }
 
 // ---------- voice dictation ----------
+// Inside the Android app, the WebView has no Web Speech API, so the native bridge
+// opens Android's voice input and calls window.onAndroidVoice(text) with the result.
+const nativeApp = window.AndroidBridge;
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognizer = null;
-if (!SpeechRecognition) {
+if (nativeApp) {
+  window.onAndroidVoice = (said, error) => {
+    if (!said) {
+      setStatus(error === "unavailable" ? "Voice input isn't available on this phone." : "Didn't catch that — try again.", !!error);
+      return;
+    }
+    const base = $("food-text").value.trim();
+    $("food-text").value = base ? `${base}, ${said}` : said;
+    calculate();
+  };
+  $("btn-mic").addEventListener("click", () => nativeApp.startVoice());
+} else if (!SpeechRecognition) {
   $("btn-mic").disabled = true;
   $("btn-mic").title = "Voice input isn't supported in this browser";
 } else {
@@ -369,6 +383,7 @@ $("btn-export").addEventListener("click", () => {
   const rows = [["date", "time", "meal", "item", "quantity", "unit", "kcal"],
     ...entries.map((e) => [e.date, e.time, e.meal, e.name, e.qty, e.unit, e.kcal])];
   const csv = rows.map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+  if (nativeApp) { nativeApp.shareFile(`calories-${dayKey()}.csv`, "text/csv", csv); return; }
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
   a.download = `calories-${dayKey()}.csv`;
@@ -399,7 +414,8 @@ if (params.get("action") === "photo") {
 }
 
 // ---------- install as app ----------
-if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+// The Android app bundles its files, so it doesn't need the service worker.
+if (!nativeApp && "serviceWorker" in navigator && location.protocol.startsWith("http")) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
 let installPrompt = null;
@@ -416,3 +432,11 @@ $("btn-install").addEventListener("click", async () => {
   $("btn-install").hidden = true;
 });
 window.addEventListener("appinstalled", () => { $("btn-install").hidden = true; });
+
+// Android back button: return to the Log tab first, then let the app close.
+window.androidBack = () => {
+  const logBtn = document.querySelector('.tabbar button[data-tab="log"]');
+  if (logBtn.classList.contains("active")) return false;
+  logBtn.click();
+  return true;
+};
