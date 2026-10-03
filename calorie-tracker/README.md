@@ -25,8 +25,32 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
-To use it on your phone, host the folder on any static host (GitHub Pages, Netlify, etc.) and
-use "Add to Home Screen" — it installs like an app.
+## Install on your Android phone
+
+Android only installs apps served over **HTTPS**, so the folder needs to be hosted first (free).
+Pick one:
+
+**Option A — Netlify Drop (no setup, ~1 minute)**
+1. On a computer, go to <https://app.netlify.com/drop> (sign up free so the site stays online).
+2. Drag the `calorie-tracker` folder (or the unzipped `calorie-tracker.zip`) onto the page.
+3. You get a link like `https://something.netlify.app` — open it on your phone.
+
+**Option B — GitHub Pages (auto-updates on every change)**
+1. GitHub Pages is free for public repos; private repos need a paid plan.
+2. In the repo go to **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Merge this branch into `master` (or run the *Deploy Calorie Tracker to GitHub Pages* workflow
+   from the **Actions** tab). The site appears at `https://<user>.github.io/<repo>/`.
+
+**Then, on the phone (Chrome):**
+1. Open the link. Tap the green **Install app** button at the top
+   (or Chrome menu ⋮ → **Add to Home screen** → **Install**).
+2. The Calories icon appears on your home screen and app drawer. It opens full-screen without the
+   browser bar and works offline (AI photo/estimates need internet).
+3. Long-press the icon for shortcuts: **Log**, **Photo**, **Dashboard**.
+
+Allow microphone and camera access the first time you use Speak / Photo.
+Your logs are stored on the phone itself — uninstalling the app or clearing Chrome's site data erases them,
+so use **Settings → Export CSV** for a backup.
 
 ## AI features (optional)
 
@@ -44,6 +68,6 @@ for a shared/public deployment, move the API call behind your own small backend.
 | `parser.js` | Turns free text into food items and calories |
 | `foods.js` | Indian food calorie table — edit to add dishes or tweak values |
 | `ai.js` | Claude calls for photos and unknown dishes |
-| `sw.js`, `manifest.json`, `icon.svg` | Offline support / install to home screen |
+| `sw.js`, `manifest.json`, `icons/`, `screenshots/` | Offline support / install to home screen |
 
 Speech recognition works in Chrome, Edge and Safari; Firefox doesn't support it (typing still works).

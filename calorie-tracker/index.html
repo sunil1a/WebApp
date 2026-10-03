@@ -7,12 +7,18 @@
   <title>Calorie Tracker</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Calories">
+  <meta name="description" content="Log Indian meals by voice, text or photo and track your daily calories.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
     <h1>Calorie Tracker</h1>
     <span id="today-label" class="muted"></span>
+    <button type="button" id="btn-install" class="btn btn-primary btn-sm" hidden>Install app</button>
   </header>
 
   <main>

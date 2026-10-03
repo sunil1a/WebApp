@@ -23,6 +23,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { margin: 0; }
 body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -33,10 +34,15 @@ body {
 }
 
 .topbar {
-  display: flex; align-items: baseline; justify-content: space-between;
-  padding: 18px 16px 6px; max-width: 640px; margin: 0 auto;
+  display: flex; justify-content: space-between;
+  padding: calc(18px + env(safe-area-inset-top)) 16px 6px; max-width: 640px; margin: 0 auto;
 }
 .topbar h1 { font-size: 1.3rem; margin: 0; color: var(--accent); }
+.topbar { gap: 8px; align-items: center; }
+.topbar #today-label { margin-left: auto; }
+.btn-sm { padding: 6px 12px; font-size: 0.85rem; margin-left: 0; white-space: nowrap; }
+.topbar:has(#btn-install:not([hidden])) #today-label { display: none; }
+@media (display-mode: standalone) { #btn-install { display: none; } }
 
 main { max-width: 640px; margin: 0 auto; padding: 0 16px; }
 .tab { display: none; }

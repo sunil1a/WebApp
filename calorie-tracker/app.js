@@ -389,6 +389,30 @@ $("today-label").textContent = new Date().toLocaleDateString(undefined, { weekda
 renderMealSelect();
 renderToday();
 
+// Home-screen shortcuts open e.g. ?tab=dashboard or ?tab=log&action=photo
+const params = new URLSearchParams(location.search);
+const startTab = params.get("tab");
+if (startTab) document.querySelector(`.tabbar button[data-tab="${CSS.escape(startTab)}"]`)?.click();
+if (params.get("action") === "photo") {
+  setStatus("Tap Photo to snap your meal.");
+  $("photo-input").click(); // may be blocked without a user tap; the hint above covers that
+}
+
+// ---------- install as app ----------
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
+let installPrompt = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  $("btn-install").hidden = false;
+});
+$("btn-install").addEventListener("click", async () => {
+  if (!installPrompt) return;
+  installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  $("btn-install").hidden = true;
+});
+window.addEventListener("appinstalled", () => { $("btn-install").hidden = true; });
