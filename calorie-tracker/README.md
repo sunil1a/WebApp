@@ -7,7 +7,7 @@ A simple, mobile-friendly calorie tracker for Indian food. No build step, no ser
 - **Log by typing or speaking** — e.g. *"2 roti, 1 katori dal, half bowl rice and a cup of chai"*.
   Understands quantities (`2`, `half`, `1.5`, `ek`, `do`, `aadha`, `dedh`), units
   (`katori`, `bowl`, `plate`, `cup`, `glass`, `piece`, `tbsp`, `100g`) and sizes (`small`, `large`).
-- **Built-in Indian food list** (~170 dishes: rotis, rice, dals, sabzis, South Indian, snacks, sweets, drinks, fruits)
+- **Built-in Indian food list** (~150 dishes: rotis, rice, dals, sabzis, South Indian, snacks, sweets, drinks, fruits)
   with typical home-style calories.
 - **Photo logging** — snap your plate and the AI identifies the dishes and estimates calories (needs an API key).
 - **AI fallback** — dishes not in the built-in list are estimated by AI when a key is set; otherwise you type the calories.
