@@ -1,0 +1,9 @@
+{
+  "name": "Calorie Tracker",
+  "short_name": "Calories",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f5f7f6",
+  "theme_color": "#2f9e6f",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
